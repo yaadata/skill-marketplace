@@ -151,13 +151,18 @@ Record each decision in `ADDRESS.md` before moving to implementation.
 
 For each accepted issue requiring a code change:
 
-1. Apply only that issue's fix.
-2. Run the narrowest relevant validation for that fix, plus static checks when
+1. Ask interactively whether to implement that issue's fix directly or invoke
+   `$code:pair` for guided no-edit implementation.
+2. If `$code:pair` is selected, invoke it only for the accepted code fix and
+   validation guidance. Do not include `ADDRESS.md` updates in the pairing
+   task.
+3. Apply only that issue's fix.
+4. Run the narrowest relevant validation for that fix, plus static checks when
    clearly applicable.
-3. Stage only the files or hunks for that atomic fix.
-4. Update `ADDRESS.md` with the changed files, validation result, and staged
+5. Stage only the files or hunks for that atomic fix.
+6. Update `ADDRESS.md` with the changed files, validation result, and staged
    summary.
-5. Stop and wait for the user to create the commit and explicitly give the
+7. Stop and wait for the user to create the commit and explicitly give the
    go-ahead before moving to the next feedback item.
 
 Do not combine unrelated accepted feedback into one staged change. If two
