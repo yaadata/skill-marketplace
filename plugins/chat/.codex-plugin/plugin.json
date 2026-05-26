@@ -1,0 +1,21 @@
+{
+  "name": "chat",
+  "version": "0.1.0",
+  "description": "Chat archiving and memorization workflows for Codex.",
+  "author": {
+    "name": "Yaadata"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Chat",
+    "shortDescription": "Archive chats and capture learnings.",
+    "longDescription": "Chat provides workflows for synthesizing conversations into project-local archive notes and extracting durable learnings into reviewable memorize artifacts before optional Codex memory storage.",
+    "developerName": "Yaadata",
+    "category": "Productivity",
+    "capabilities": [
+      "chat-archiving",
+      "chat-memorization"
+    ],
+    "defaultPrompt": "Use $chat:archive to synthesize a conversation range into a project-local archive note, or $chat:memorize to extract durable learnings, review them interactively, and optionally create a Codex memory update note."
+  }
+}
