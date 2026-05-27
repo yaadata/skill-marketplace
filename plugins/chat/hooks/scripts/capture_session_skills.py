@@ -34,12 +34,16 @@ def main() -> int:
         return ok("bd not found; session skills not stored")
 
     stored = False
+    errors: list[str] = []
     for key in memory_keys(session_id, cwd):
-        stored = remember(key, record, cwd) or stored
+        ok_result, error = remember(key, record, cwd)
+        stored = ok_result or stored
+        if error:
+            errors.append(f"{key}: {error}")
 
     if stored:
         return ok("session skills captured")
-    return ok("bd remember failed; session skills not stored")
+    return ok(f"bd remember failed; session skills not stored: {errors[0] if errors else 'unknown error'}")
 
 
 def build_record(*, cwd: str, session_id: str, skills: list[str], task_state: list[str]) -> str:

@@ -54,12 +54,16 @@ def main() -> int:
 
     keys = memory_keys(session_id, cwd)
     stored = False
+    errors: list[str] = []
     for key in keys:
-        stored = remember(key, handoff, cwd) or stored
+        ok_result, error = remember(key, handoff, cwd)
+        stored = ok_result or stored
+        if error:
+            errors.append(f"{key}: {error}")
 
     if stored:
         return ok("compact handoff captured")
-    return ok("bd remember failed; compact handoff not stored")
+    return ok(f"bd remember failed; compact handoff not stored: {errors[0] if errors else 'unknown error'}")
 
 
 def read_stdin_json() -> dict[str, Any]:
@@ -244,19 +248,30 @@ def bd_available() -> bool:
     return shutil.which("bd") is not None
 
 
-def remember(key: str, handoff: str, cwd: str) -> bool:
+def remember(key: str, handoff: str, cwd: str) -> tuple[bool, str]:
     try:
         result = subprocess.run(
             ["bd", "remember", handoff, "--key", key],
             cwd=cwd if Path(cwd).exists() else None,
             check=False,
             stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
             timeout=8,
         )
-    except (OSError, subprocess.SubprocessError):
-        return False
-    return result.returncode == 0
+    except (OSError, subprocess.SubprocessError) as exc:
+        return False, str(exc)
+    if result.returncode == 0:
+        return True, ""
+    return False, first_line(result.stderr) or f"bd remember exited {result.returncode}"
+
+
+def first_line(text: str) -> str:
+    for line in text.splitlines():
+        line = line.strip()
+        if line:
+            return line
+    return ""
 
 
 def ok(message: str) -> int:

@@ -160,19 +160,22 @@ def bd_available() -> bool:
     return shutil.which("bd") is not None
 
 
-def remember(key: str, value: str, cwd: str) -> bool:
+def remember(key: str, value: str, cwd: str) -> tuple[bool, str]:
     try:
         result = subprocess.run(
             ["bd", "remember", value, "--key", key],
             cwd=cwd if Path(cwd).exists() else None,
             check=False,
             stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            text=True,
             timeout=8,
         )
-    except (OSError, subprocess.SubprocessError):
-        return False
-    return result.returncode == 0
+    except (OSError, subprocess.SubprocessError) as exc:
+        return False, str(exc)
+    if result.returncode == 0:
+        return True, ""
+    return False, first_line(result.stderr) or f"bd remember exited {result.returncode}"
 
 
 def recall_first(keys: list[str], cwd: str) -> str:
@@ -198,3 +201,11 @@ def recall_first(keys: list[str], cwd: str) -> str:
 def emit_common(message: str) -> int:
     print(json.dumps({"continue": True, "suppressOutput": True, "systemMessage": message}))
     return 0
+
+
+def first_line(text: str) -> str:
+    for line in text.splitlines():
+        line = line.strip()
+        if line:
+            return line
+    return ""
