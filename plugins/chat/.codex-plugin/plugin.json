@@ -1,21 +1,24 @@
 {
   "name": "chat",
   "version": "0.1.0",
-  "description": "Chat archiving and memorization workflows for Codex.",
+  "description": "Chat archiving, memorization, and compact handoff workflows for Codex.",
   "author": {
     "name": "Yaadata"
   },
   "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Chat",
-    "shortDescription": "Archive chats and capture learnings.",
-    "longDescription": "Chat provides workflows for synthesizing conversations into project-local archive notes and extracting durable learnings into reviewable memorize artifacts before optional Codex memory storage.",
+    "shortDescription": "Archive chats, capture learnings, and preserve compact handoffs.",
+    "longDescription": "Chat provides workflows for synthesizing conversations into project-local archive notes, extracting durable learnings into reviewable memorize artifacts, preserving compact handoffs, and restoring active skills on session restart through Beads-backed lifecycle hooks.",
     "developerName": "Yaadata",
     "category": "Productivity",
     "capabilities": [
       "chat-archiving",
-      "chat-memorization"
+      "chat-memorization",
+      "compact-handoff",
+      "session-skill-restore"
     ],
-    "defaultPrompt": "Use $chat:archive to synthesize a conversation range into a project-local archive note, or $chat:memorize to extract durable learnings, review them interactively, and optionally create a Codex memory update note."
+    "defaultPrompt": "Use $chat:archive to synthesize a conversation range into a project-local archive note, $chat:memorize to extract durable learnings, $chat:before_compact to store a concise Beads handoff before compacting, or $chat:after_compact to recover context and interactively reapply relevant skills after compaction. Startup and resume hooks restore active skills separately without summarizing the previous chat."
   }
 }
