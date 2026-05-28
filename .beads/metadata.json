@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "skill_marketplace",
+  "project_id": "7240632c-73d0-4c9d-9a70-04204529b739"
+}
