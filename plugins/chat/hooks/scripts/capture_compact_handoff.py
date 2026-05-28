@@ -50,7 +50,7 @@ def main() -> int:
         return 0
 
     if not bd_available():
-        return ok("bd not found; compact handoff not stored")
+        return emit_warning("bd not found; compact handoff not stored")
 
     keys = memory_keys(session_id, cwd)
     stored = False
@@ -62,8 +62,8 @@ def main() -> int:
             errors.append(f"{key}: {error}")
 
     if stored:
-        return ok("compact handoff captured")
-    return ok(f"bd remember failed; compact handoff not stored: {errors[0] if errors else 'unknown error'}")
+        return emit_success("✓ compact handoff saved")
+    return emit_warning(f"bd remember failed; compact handoff not stored: {errors[0] if errors else 'unknown error'}")
 
 
 def read_stdin_json() -> dict[str, Any]:
@@ -274,7 +274,12 @@ def first_line(text: str) -> str:
     return ""
 
 
-def ok(message: str) -> int:
+def emit_success(message: str) -> int:
+    print(message)
+    return 0
+
+
+def emit_warning(message: str) -> int:
     print(json.dumps({"continue": True, "suppressOutput": True, "systemMessage": message}))
     return 0
 

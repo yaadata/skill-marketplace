@@ -30,11 +30,11 @@ def main() -> int:
     event = str(payload.get("hook_event_name") or payload.get("hookEventName") or "SessionStart")
 
     if not bd_available():
-        return emit_common("bd not found; no compact handoff recovered")
+        return emit_warning("bd not found; no compact handoff recovered")
 
     handoff = recall_first(memory_keys(session_id, cwd), cwd)
     if not handoff:
-        return emit_common("No compact handoff found in Beads")
+        return emit_noop()
 
     context = build_context(handoff)
     if args.dry_run:
@@ -42,7 +42,7 @@ def main() -> int:
         return 0
 
     if args.post_compact:
-        return emit_common("Compact handoff is available in Beads")
+        return emit_success("✓ compact handoff available")
 
     print(
         json.dumps(
@@ -122,7 +122,17 @@ Use this as concise resume context, not as a full transcript. Ask the user one a
 """
 
 
-def emit_common(message: str) -> int:
+def emit_success(message: str) -> int:
+    print(message)
+    return 0
+
+
+def emit_noop() -> int:
+    print(json.dumps({"continue": True}))
+    return 0
+
+
+def emit_warning(message: str) -> int:
     print(json.dumps({"continue": True, "suppressOutput": True, "systemMessage": message}))
     return 0
 

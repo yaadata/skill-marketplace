@@ -198,7 +198,12 @@ def recall_first(keys: list[str], cwd: str) -> str:
     return ""
 
 
-def emit_common(message: str) -> int:
+def emit_noop() -> int:
+    print(json.dumps({"continue": True}))
+    return 0
+
+
+def emit_warning(message: str) -> int:
     print(json.dumps({"continue": True, "suppressOutput": True, "systemMessage": message}))
     return 0
 

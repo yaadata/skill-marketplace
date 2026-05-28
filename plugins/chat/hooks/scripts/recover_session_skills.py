@@ -7,7 +7,7 @@ import argparse
 import json
 import os
 
-from session_state import bd_available, emit_common, hash_cwd, read_stdin_json, recall_first, safe_key
+from session_state import bd_available, emit_noop, emit_warning, hash_cwd, read_stdin_json, recall_first, safe_key
 
 
 MAX_CONTEXT_CHARS = 1_200
@@ -24,11 +24,11 @@ def main() -> int:
     event = str(payload.get("hook_event_name") or payload.get("hookEventName") or "SessionStart")
 
     if not bd_available():
-        return emit_common("bd not found; no session skills recovered")
+        return emit_warning("bd not found; no session skills recovered")
 
     record = recall_first(memory_keys(session_id, cwd), cwd)
     if not record:
-        return emit_common("No session skill restore record found in Beads")
+        return emit_noop()
 
     context = build_context(record)
     if args.dry_run:

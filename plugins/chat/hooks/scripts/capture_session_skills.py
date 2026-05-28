@@ -31,7 +31,7 @@ def main() -> int:
         return 0
 
     if not bd_available():
-        return ok("bd not found; session skills not stored")
+        return emit_warning("bd not found; session skills not stored")
 
     stored = False
     errors: list[str] = []
@@ -42,8 +42,8 @@ def main() -> int:
             errors.append(f"{key}: {error}")
 
     if stored:
-        return ok("session skills captured")
-    return ok(f"bd remember failed; session skills not stored: {errors[0] if errors else 'unknown error'}")
+        return emit_success("✓ session skills saved")
+    return emit_warning(f"bd remember failed; session skills not stored: {errors[0] if errors else 'unknown error'}")
 
 
 def build_record(*, cwd: str, session_id: str, skills: list[str], task_state: list[str]) -> str:
@@ -80,7 +80,12 @@ def memory_keys(session_id: str, cwd: str) -> list[str]:
     return keys
 
 
-def ok(message: str) -> int:
+def emit_success(message: str) -> int:
+    print(message)
+    return 0
+
+
+def emit_warning(message: str) -> int:
     import json
 
     print(json.dumps({"continue": True, "suppressOutput": True, "systemMessage": message}))
