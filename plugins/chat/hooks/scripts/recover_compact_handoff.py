@@ -42,7 +42,7 @@ def main() -> int:
         return 0
 
     if args.post_compact:
-        return emit_success("✓ compact handoff available")
+        return emit_success()
 
     print(
         json.dumps(
@@ -122,8 +122,8 @@ Use this as concise resume context, not as a full transcript. Ask the user one a
 """
 
 
-def emit_success(message: str) -> int:
-    print(message)
+def emit_success() -> int:
+    print(json.dumps({"continue": True}))
     return 0
 
 

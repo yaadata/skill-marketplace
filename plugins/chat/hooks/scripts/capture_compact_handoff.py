@@ -62,7 +62,7 @@ def main() -> int:
             errors.append(f"{key}: {error}")
 
     if stored:
-        return emit_success("✓ compact handoff saved")
+        return emit_success()
     return emit_warning(f"bd remember failed; compact handoff not stored: {errors[0] if errors else 'unknown error'}")
 
 
@@ -274,8 +274,8 @@ def first_line(text: str) -> str:
     return ""
 
 
-def emit_success(message: str) -> int:
-    print(message)
+def emit_success() -> int:
+    print(json.dumps({"continue": True}))
     return 0
 
 

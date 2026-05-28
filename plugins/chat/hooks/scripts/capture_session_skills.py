@@ -42,7 +42,7 @@ def main() -> int:
             errors.append(f"{key}: {error}")
 
     if stored:
-        return emit_success("✓ session skills saved")
+        return emit_success()
     return emit_warning(f"bd remember failed; session skills not stored: {errors[0] if errors else 'unknown error'}")
 
 
@@ -80,8 +80,10 @@ def memory_keys(session_id: str, cwd: str) -> list[str]:
     return keys
 
 
-def emit_success(message: str) -> int:
-    print(message)
+def emit_success() -> int:
+    import json
+
+    print(json.dumps({"continue": True}))
     return 0
 
 
