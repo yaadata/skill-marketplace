@@ -5,7 +5,7 @@ description: Pair-program interactively without editing files. Use when the user
 
 # Code Pair
 
-Guide a human programmer through implementation without editing files. Pairing is advisory, interactive, and bidirectional.
+Guide a human through implementation without editing files. Pairing is advisory, interactive, and bidirectional. Track remaining pairing chunks in Beads when available.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ The user may provide:
 
 If no input is provided, ask interactively for a plan, prompt, or ticket to pair on.
 
-For external tickets, use available provider CLIs or tools when available. If context cannot be fetched or is ambiguous, ask the user to paste the ticket details.
+For external tickets, use available provider CLIs or tools when available. If context cannot be fetched or is ambiguous, ask the user to paste details.
 
 ## No-Edit Mode
 
@@ -27,20 +27,44 @@ While pairing:
 
 - Do not edit files.
 - Do not apply patches.
-- Do not run mutating commands.
+- Do not run mutating repo commands.
 - Do not run tests by default.
 - Do not claim to have changed code.
 - Read, search, inspect git state, and inspect local code as needed.
+- Beads task tracking is the only allowed mutation, and only after user confirmation.
 
 If the user chooses to bail for a chunk, no-edit mode is suspended for that chunk only. After that chunk is implemented, resume pairing on the next chunk unless the user explicitly exits pairing.
+
+## Beads Tracking
+
+At the start of `$code:pair`:
+
+1. Check whether Beads is available. If no database is initialized, tell the user to run `bd init --stealth --non-interactive` or set `BEADS_DIR`, then ask whether to continue untracked.
+2. Search for open or in-progress tasks labeled `code-pair` that match the current repo/session/input metadata when available.
+3. If matching tasks exist, use them as the remaining pairing checklist instead of creating duplicates.
+4. If no matching tasks exist, build the ordered pairing checklist in-chat first, then ask once before creating all chunk tasks.
+
+For each created chunk task:
+
+- Use `bd create`.
+- Set `--type task`, `--label code-pair`, and `--due +2w`.
+- Set metadata for `code_pair=true`, current repo/cwd, session when known, input reference when known, and chunk order.
+- Put goal, files or symbols, implementation notes, validation, and report-back instructions in the description.
+- Do not use `--ephemeral`; pairing chunks must remain durable and exported.
+
+During pairing:
+
+- Ask before `bd update <id> --claim` when starting a chunk.
+- Ask before `bd close <id> --reason "Pairing chunk completed"` when the user reports a chunk complete.
+- Keep the in-chat checklist aligned with confirmed Beads status.
 
 ## Workflow
 
 1. Load the input context.
 2. Inspect relevant local code when needed to avoid guessing.
 3. Confirm the request is specific enough to pair on. If it is vague, ask one interactive question at a time until the implementation path is clear.
-4. Convert the request into an ordered pairing checklist.
-5. For each chunk, ask interactively whether the user wants to:
+4. Recover or create the Beads-tracked pairing checklist.
+5. For each remaining chunk, ask interactively whether the user wants to:
    - show the task or instructions
    - show code
    - bail and let Codex implement this chunk only
@@ -52,7 +76,7 @@ If the user chooses to bail for a chunk, no-edit mode is suspended for that chun
 9. If the user implemented a different approach, verify whether it satisfies the chunk goal and preserves the broader plan.
 10. If the approach is valid, treat the user's implementation as the new source of truth, update the remaining checklist, and continue from that path.
 11. If the approach is risky or incomplete, explain the concrete issue and ask one interactive decision about whether to adjust, revert, or continue with a modified plan.
-12. Adapt the next chunk based on user feedback, errors, test failures, changed constraints, or better implementation ideas from the user.
+12. Adapt the next chunk based on feedback, errors, test failures, changed constraints, or better implementation ideas.
 13. When the checklist is complete, provide final validation guidance and explicitly exit pairing mode.
 
 ## Chunk Guidance
@@ -85,20 +109,6 @@ If the user disagrees with the suggested path or has a better implementation app
 4. Ask one focused question only if the new path changes scope, risk, API shape, or validation.
 
 Do not keep pushing the original checklist after the user has redirected the implementation.
-
-## User-Written Alternatives
-
-The user may code a different approach than Codex suggested.
-
-When that happens:
-
-1. Inspect the actual change or ask the user to show the diff if it is not available.
-2. Verify the approach against the current chunk goal, surrounding code, and remaining checklist.
-3. Call out any correctness, maintainability, testing, or integration risks.
-4. If the approach is sound, accept it and revise future chunks around the new implementation direction.
-5. If it changes the design materially, ask one focused interactive question before updating the checklist.
-
-Do not require the user to follow the original suggested code when their approach is better or equivalent.
 
 ## Bail Behavior
 

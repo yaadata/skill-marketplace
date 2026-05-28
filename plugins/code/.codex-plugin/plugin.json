@@ -1,15 +1,15 @@
 {
   "name": "code",
   "version": "0.1.0",
-  "description": "Code learning, explanation, documentation, comment-drafting, planning, TDD, architecture, Beads task, pair-programming, and todo-generation workflows for Codex.",
+  "description": "Code learning, explanation, documentation, comment-drafting, planning, TDD, architecture, Beads task, Beads-tracked pair-programming, and todo-generation workflows for Codex.",
   "author": {
     "name": "Yaadata"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "Code",
-    "shortDescription": "Learn, explain, document, comment, plan, TDD, architect, execute tasks, pair, and draft todos.",
-    "longDescription": "Code provides teaching-oriented workflows for broad project learning, explaining unfamiliar code, writing code documentation artifacts, drafting comments for specific code blocks, creating exhaustive implementation plans, implementing behavior through test-driven development, decomposing architecture work into phased Beads tasks, continuing Beads tasks from accepted plans, pair-programming through code changes without editing files, and generating issue-tracker-ready todo artifacts.",
+    "shortDescription": "Learn, explain, document, comment, plan, TDD, architect, execute tasks, pair with Beads tracking, and draft todos.",
+    "longDescription": "Code provides teaching-oriented workflows for broad project learning, explaining unfamiliar code, writing code documentation artifacts, drafting comments for specific code blocks, creating exhaustive implementation plans, implementing behavior through test-driven development, decomposing architecture work into phased Beads tasks, continuing Beads tasks from accepted plans, pair-programming through code changes without editing files while tracking remaining chunks in Beads, and generating issue-tracker-ready todo artifacts.",
     "developerName": "Yaadata",
     "category": "Productivity",
     "capabilities": [
@@ -24,6 +24,6 @@
       "code-pair-programming",
       "code-todo-generation"
     ],
-    "defaultPrompt": "Use $code:learn for sourced broad-topic project learning, $code:describe to learn how specific code works, $code:document to write a code documentation artifact, $code:comment to draft and optionally insert a contextual comment, $code:plan to create an implementation-ready plan, $code:tdd to implement behavior through red-green TDD loops, $code:architect to decompose architecture work into phased Beads tasks, $code:task to continue a Beads task from an accepted plan, $code:pair to pair-program without Codex editing files, or $code:todo to draft an issue-tracker-ready Markdown todo."
+    "defaultPrompt": "Use $code:learn for sourced broad-topic project learning, $code:describe to learn how specific code works, $code:document to write a code documentation artifact, $code:comment to draft and optionally insert a contextual comment, $code:plan to create an implementation-ready plan, $code:tdd to implement behavior through red-green TDD loops, $code:architect to decompose architecture work into phased Beads tasks, $code:task to continue a Beads task from an accepted plan, $code:pair to pair-program without Codex editing files while tracking remaining chunks in Beads, or $code:todo to draft an issue-tracker-ready Markdown todo."
   }
 }
