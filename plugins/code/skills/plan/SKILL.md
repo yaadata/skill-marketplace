@@ -57,6 +57,7 @@ Act like `grill-me`:
 11. Ask the user to accept the plan.
 12. Only after acceptance, write the artifact.
 13. After the accepted artifact is written, perform the recorded implementation handoff.
+14. Every final proposed plan must include an `Implementation Handoff` section so a clear-context `SessionStart` hook can recover selected implementation skills.
 
 ## Artifact Timing
 
@@ -80,6 +81,25 @@ After writing an accepted plan artifact, do not ask another implementation hando
 
 Do not invoke an implementation skill that was not selected in the accepted plan.
 
+The final proposed plan must contain this exact heading and fields:
+
+```markdown
+## Implementation Handoff
+- Selected skills: $code:tdd, $code:pair
+- TDD: all slices | selected slices | not selected
+- TDD slices: concise list, or none
+- Pairing: selected | not selected
+- Accepted plan path: deferred until acceptance
+```
+
+Rules:
+
+- List only selected implementation skills in `Selected skills`; use `none` when no implementation skill was selected.
+- Keep values concise and single-line so hook recovery can inject them without expanding context.
+- Before the artifact is accepted and written, set `Accepted plan path` to `deferred until acceptance`.
+- After writing the artifact, use the actual artifact path in the handoff.
+- If the user clears context and asks to implement, the clear-context recovery hook may use this section to reapply selected implementation skills without asking again.
+
 ## Artifact Path
 
 Write accepted artifacts to:
@@ -96,6 +116,7 @@ The final plan should be concise but implementation-ready. Include:
 - Key changes
 - Public interfaces or behavior changes
 - Implementation sequence
+- Implementation handoff
 - TDD decision and behavior slices, when applicable
 - Atomic commits, when applicable
 - Test and validation plan

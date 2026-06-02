@@ -10,15 +10,16 @@
   "interface": {
     "displayName": "Chat",
     "shortDescription": "Archive chats, capture learnings, and preserve compact handoffs.",
-    "longDescription": "Chat provides workflows for synthesizing conversations into project-local archive notes, extracting durable learnings into reviewable memorize artifacts, preserving compact handoffs, and restoring active skills on session restart through Beads-backed lifecycle hooks.",
+    "longDescription": "Chat provides workflows for synthesizing conversations into project-local archive notes, extracting durable learnings into reviewable memorize artifacts, preserving compact handoffs, and restoring active skills or accepted plan implementation handoffs on session restart through Beads-backed lifecycle hooks.",
     "developerName": "Yaadata",
     "category": "Productivity",
     "capabilities": [
       "chat-archiving",
       "chat-memorization",
       "compact-handoff",
-      "session-skill-restore"
+      "session-skill-restore",
+      "clear-context-plan-handoff"
     ],
-    "defaultPrompt": "Use $chat:archive to synthesize a conversation range into a project-local archive note, $chat:memorize to extract durable learnings, $chat:before_compact to store a concise Beads handoff before compacting, or $chat:after_compact to recover context and interactively reapply relevant skills after compaction. Startup and resume hooks restore active skills separately without summarizing the previous chat."
+    "defaultPrompt": "Use $chat:archive to synthesize a conversation range into a project-local archive note, $chat:memorize to extract durable learnings, $chat:before_compact to store a concise Beads handoff before compacting, or $chat:after_compact to recover context and interactively reapply relevant skills after compaction. Startup, resume, and clear-context hooks restore active skills or accepted plan implementation handoffs separately without summarizing the previous chat."
   }
 }
