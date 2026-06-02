@@ -222,3 +222,5 @@ __marimo__/
 *.db
 .beads-credential-key
 .beads/
+
+.beads/
