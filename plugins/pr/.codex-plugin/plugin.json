@@ -1,6 +1,6 @@
 {
   "name": "pr",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Pull request review, description, and feedback-addressing workflows for Codex.",
   "author": {
     "name": "Yaadata"
