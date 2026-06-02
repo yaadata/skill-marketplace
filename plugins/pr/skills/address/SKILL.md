@@ -54,7 +54,18 @@ For a PR URL:
    - Use a specific review.
 2. For all-comments mode, identify the PR author from provider metadata and
    exclude comments authored by that user.
-3. For specific-review mode, ask for a reviewer username first.
+3. For specific-review mode, fetch provider metadata first and build reviewer
+   choices from non-author users with reviews, latest reviews, comments, or
+   line-level review comments.
+4. Ask for the reviewer with interactive select choices when available. Each
+   choice should show the reviewer username plus useful context such as review
+   state, review count, comment count, or latest review time when available.
+5. If the reviewer list is too large, ask one interactive narrowing or paging
+   question at a time instead of asking the user to type a username. Examples:
+   show the first page of reviewers, show the next page, filter to reviewers
+   with unresolved or requested-change feedback, or filter by review state.
+6. Use free-form reviewer username input only when no reviewer choices can be
+   discovered from provider metadata or comments.
 
 Provider comment rules:
 
@@ -143,7 +154,9 @@ Every user decision must be an interactive decision when Codex has an
 interactive select action available. Ask exactly one question at a time. Put the
 recommended option first and label it recommended. Use free-form input only when
 the user must provide information that cannot be expressed as a small set of
-meaningful choices, such as a reviewer username.
+meaningful choices. Reviewer username selection must use provider-derived
+interactive choices when available; free-form reviewer input is only a fallback
+when no choices can be discovered.
 
 Record each decision in `ADDRESS.md` before moving to implementation.
 
