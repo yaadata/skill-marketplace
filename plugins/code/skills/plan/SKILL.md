@@ -39,7 +39,7 @@ Act like `grill-me`:
    - use `$code:tdd` for implementation
    - do not use TDD
    - use TDD only for selected behavior slices
-5. Independently ask whether implementation handoff should include `$code:pair`:
+5. Independently ask whether the `Beads Task Plan` should select `$code:pair`:
    - include `$code:pair`
    - do not include `$code:pair`
 6. When TDD is selected for all or part of the implementation, include:
@@ -57,8 +57,8 @@ Act like `grill-me`:
 11. Ask the user to accept the plan.
 12. Only after acceptance, write the artifact.
 13. After the accepted artifact is written, create the Beads task handoff.
-14. After the Beads task handoff is created, perform the recorded implementation handoff.
-15. Every final proposed plan must include an `Implementation Handoff` section so a clear-context `SessionStart` hook can recover selected implementation skills.
+14. After the Beads task handoff is created, invoke only the implementation skills recorded in `Beads Task Plan`.
+15. Every final proposed plan must include `Beads Task Plan`; it is the single artifact source for selected skills, accepted path, and Beads tasks.
 
 ## Artifact Timing
 
@@ -69,58 +69,59 @@ Artifact generation happens only after:
 1. the final plan has been presented to the user, and
 2. the user explicitly accepts it.
 
-If the active collaboration mode prevents file writes, present the final plan and defer artifact creation until the user exits that mode or asks to implement the accepted plan. After leaving that mode and writing the deferred artifact, perform the recorded implementation handoff.
+If the active collaboration mode prevents file writes, present the final plan and defer artifact creation until the user exits that mode or asks to implement the accepted plan. After leaving that mode and writing the deferred artifact, create Beads tasks and invoke only the selected skills recorded in `Beads Task Plan`.
 
-## Implementation Handoff
+## Beads Task Plan
 
-Hard sequence after acceptance:
+Every final proposed plan must contain a `Beads Task Plan` section. This makes the artifact itself say which skills to invoke and which Beads tasks to create, so recovery does not depend on remembering this skill prompt.
 
-`write artifact -> update accepted path -> create Beads tasks -> invoke selected skills`
-
-Do not ask another implementation handoff question after the artifact is accepted. Do not invoke an implementation skill that was not selected in the accepted plan.
-
-Invocation map:
-
-- `$code:tdd` + `$code:pair` selected: invoke both with accepted plan path and recorded decisions.
-- only `$code:tdd` selected: invoke `$code:tdd` with accepted plan path and recorded TDD decisions.
-- only `$code:pair` selected: invoke `$code:pair` with accepted plan path and recorded pairing decision.
-- none selected: stop after artifact + Beads tasks.
-
-Every final proposed plan must contain this exact hook-readable block:
+Required artifact shape:
 
 ```markdown
-## Implementation Handoff
+## Beads Task Plan
+- Skill gate: Set implementation skills for this plan
 - Selected skills: $code:tdd, $code:pair
 - TDD: all slices | selected slices | not selected
 - TDD slices: concise list, or none
 - Pairing: selected | not selected
 - Accepted plan path: deferred until acceptance
+- Gate labels: code-plan, beads-task-plan, skill-gate
+- Slice task labels: code-plan, beads-task-plan, implementation-slice
+- Dependency rule: every slice task depends on the skill gate
+- Tasks:
+  1. <slice title> | skills: <skills or none> | validation: <concise validation>
 ```
 
-- List only selected implementation skills in `Selected skills`; use `none` when no implementation skill was selected.
-- Keep every value concise and single-line.
+Rules:
+
+- `Selected skills` is the source of truth; list only selected implementation skills, or `none`.
+- Keep all scalar values concise and single-line so recovery can inject them without expanding context.
 - Use `Accepted plan path: deferred until acceptance` before artifact write; replace it with the actual artifact path after write.
-- Clear-context recovery may use this block to reapply selected skills.
+- `Tasks` must mirror the implementation sequence; use one task per implementation slice.
+- Each task line must name the skill mode: `$code:tdd`, `$code:pair`, both, or `none`.
+- If TDD is selected for only some slices, only those task lines name `$code:tdd`.
+- Keep task lines concise but concrete enough to create Beads tasks without rereading the whole plan.
+- Clear-context recovery may use this section to create Beads tasks and reapply selected skills.
 
 ## Beads Task Handoff
 
-Create Beads tasks only after accepted artifact exists and its handoff block has actual path.
+Create Beads tasks from the accepted artifact's `Beads Task Plan`, only after the artifact exists and `Accepted plan path` is the actual artifact path.
 
 Preflight:
 
 - Verify `bd` exists and repo has initialized Beads DB.
-- If unavailable, stop before implementation handoff. Report accepted plan path, selected skills, and exact Beads failure.
+- If unavailable, stop before invoking implementation skills. Report accepted plan path, selected skills, and exact Beads failure.
 - Never create tasks for draft plans.
 
 Task graph:
 
 - Create skill gate first, always, even when selected skills = `none`.
-- Gate labels: `code-plan,implementation-handoff,skill-gate`.
+- Gate labels: `code-plan,beads-task-plan,skill-gate`.
 - Gate metadata: `accepted_plan_path`, `selected_skills`, `tdd_mode`, `tdd_slices`, `pairing`, `task_order:0`.
-- Create one implementation task per plan slice.
-- Slice labels: `code-plan,implementation-handoff,implementation-slice`.
+- Create one implementation task per `Beads Task Plan` task line.
+- Slice labels: `code-plan,beads-task-plan,implementation-slice`.
 - Slice metadata: `accepted_plan_path`, `selected_skills`, `task_order` using 1-based slice order.
-- Slice description: goal, files/symbols/subsystems, notes, validation, skill mode, report-back instructions.
+- Slice description: task line plus relevant goal, files/symbols/subsystems, notes, validation, skill mode, report-back instructions.
 - Add `--skills` only when selected skills is not `none`.
 - Every slice task depends on gate: `bd dep add <slice-task-id> <skill-gate-task-id>`.
 
@@ -129,7 +130,7 @@ Command shapes:
 ```bash
 bd create "Set implementation skills for <accepted plan filename>" \
   --type task \
-  --labels code-plan,implementation-handoff,skill-gate \
+  --labels code-plan,beads-task-plan,skill-gate \
   --due +2w \
   --skills '$code:tdd,$code:pair' \
   --metadata '{"accepted_plan_path":"...","selected_skills":"$code:tdd, $code:pair","tdd_mode":"all slices","tdd_slices":"...","pairing":"selected","task_order":0}' \
@@ -138,7 +139,7 @@ bd create "Set implementation skills for <accepted plan filename>" \
 
 bd create "<slice title>" \
   --type task \
-  --labels code-plan,implementation-handoff,implementation-slice \
+  --labels code-plan,beads-task-plan,implementation-slice \
   --due +2w \
   --skills '$code:tdd,$code:pair' \
   --metadata '{"accepted_plan_path":"...","selected_skills":"$code:tdd, $code:pair","task_order":1}' \
@@ -166,7 +167,7 @@ The final plan should be concise but implementation-ready. Include:
 - Key changes
 - Public interfaces or behavior changes
 - Implementation sequence
-- Implementation handoff
+- Beads task plan
 - TDD decision and behavior slices, when applicable
 - Atomic commits, when applicable
 - Test and validation plan
