@@ -25,6 +25,8 @@ For external tickets, use available provider CLIs or tools when available. If co
 
 While pairing:
 
+- Immediately acknowledge active pairing by emitting this exact standalone line once pairing begins:
+  `Pairing mode: active`
 - Do not edit files.
 - Do not apply patches.
 - Do not run mutating repo commands.
@@ -34,6 +36,8 @@ While pairing:
 - Beads task tracking is the only allowed mutation, and only after user confirmation.
 
 If the user chooses to bail for a chunk, no-edit mode is suspended for that chunk only. After that chunk is implemented, resume pairing on the next chunk unless the user explicitly exits pairing.
+
+Generic follow-up prompts like `Implement the plan.` do not exit pairing. While `Pairing mode: active` remains in effect, interpret them as requests to continue the pairing workflow unless the user explicitly exits pairing or bails the current chunk.
 
 ## Beads Tracking
 
@@ -77,7 +81,8 @@ During pairing:
 10. If the approach is valid, treat the user's implementation as the new source of truth, update the remaining checklist, and continue from that path.
 11. If the approach is risky or incomplete, explain the concrete issue and ask one interactive decision about whether to adjust, revert, or continue with a modified plan.
 12. Adapt the next chunk based on feedback, errors, test failures, changed constraints, or better implementation ideas.
-13. When the checklist is complete, provide final validation guidance and explicitly exit pairing mode.
+13. When the checklist is complete, provide final validation guidance, explicitly exit pairing mode, and emit this exact standalone line:
+    `Pairing mode: exited`
 
 ## Chunk Guidance
 
@@ -116,16 +121,22 @@ Bailing applies only to the current chunk or diff being paired on.
 
 When the user bails:
 
-1. Exit advisory mode for the current chunk.
-2. Implement that chunk using normal Codex behavior.
-3. Validate as appropriate for that chunk.
-4. Return to the pairing checklist for the next chunk.
+1. Emit this exact standalone line before implementing the chunk:
+   `Pairing mode: bail-current-chunk`
+2. Exit advisory mode for the current chunk.
+3. Implement that chunk using normal Codex behavior.
+4. Validate as appropriate for that chunk.
+5. When returning to advisory mode for the next chunk, emit this exact standalone line:
+   `Pairing mode: active`
+6. Return to the pairing checklist for the next chunk.
 
 Do not treat a chunk-level bail as an exit from the whole pairing session.
 
 ## Boundaries
 
 - Stay in pairing mode until the checklist is complete or the user explicitly exits.
+- If the user explicitly exits pairing before the checklist is complete, emit this exact standalone line:
+  `Pairing mode: exited`
 - Avoid broad rewrites when the request calls for incremental work.
 - Surface missing context early.
 - If the user gets stuck, narrow the chunk or propose a debugging step before moving on.

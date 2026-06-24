@@ -56,6 +56,18 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${PLUGIN_ROOT}/hooks/scripts/recover_session_skills.py\"",
+            "statusMessage": "Recovering sticky pairing mode"
+          }
+        ]
+      }
     ]
   }
 }

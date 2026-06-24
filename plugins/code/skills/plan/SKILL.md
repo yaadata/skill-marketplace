@@ -47,6 +47,8 @@ Act like `grill-me`:
    - likely test entry points when discoverable from local code
    - behavior slices explicitly marked no-test with substitute validation
 7. Record the independent `$code:pair` decision in the final plan.
+   - When pairing is selected, the implementation handoff must re-enter advisory pairing by emitting `Pairing mode: active`.
+   - When pairing is selected, generic follow-up prompts like `Implement the plan.` must be treated as continuing pairing unless the user explicitly exits pairing or bails the current chunk.
 8. For large, risky, cross-cutting, or multi-subsystem changes, ask whether to include atomic commits.
 9. When atomic commits are included, describe each commit with:
    - single purpose
@@ -100,6 +102,7 @@ Rules:
 - `Tasks` must mirror the implementation sequence; use one task per implementation slice.
 - Each task line must name the skill mode: `$code:tdd`, `$code:pair`, both, or `none`.
 - If TDD is selected for only some slices, only those task lines name `$code:tdd`.
+- If `Pairing: selected`, the implementing turn must emit `Pairing mode: active` when advisory pairing begins and preserve sticky pairing across later generic implementation prompts until explicit exit or chunk bail.
 - Keep task lines concise but concrete enough to create Beads tasks without rereading the whole plan.
 - Clear-context recovery may use this section to create Beads tasks and reapply selected skills.
 
@@ -150,6 +153,11 @@ bd dep add <slice-task-id> <skill-gate-task-id>
 ```
 
 After tasks exist, summarize only accepted plan path, skill gate task ID, slice task IDs in order, and selected skills.
+
+If pairing is selected:
+
+- Invoke `$code:pair` first so the implementing turn enters advisory mode and emits `Pairing mode: active`.
+- Preserve sticky pairing on later generic implementation prompts until the user explicitly exits pairing or bails the current chunk.
 
 ## Artifact Path
 

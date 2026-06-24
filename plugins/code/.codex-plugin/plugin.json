@@ -1,6 +1,6 @@
 {
   "name": "code",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Code learning, explanation, documentation, comment-drafting, planning, TDD, architecture, Beads task, Beads-tracked pair-programming, and todo-generation workflows for Codex.",
   "author": {
     "name": "Yaadata"

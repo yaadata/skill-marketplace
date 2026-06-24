@@ -15,6 +15,7 @@ from typing import Any
 
 COMPACT_SKILLS = {"chat:before_compact", "chat:after_compact", "$chat:before_compact", "$chat:after_compact"}
 MAX_TRANSCRIPT_BYTES = 180_000
+PAIRING_MODE_PATTERN = re.compile(r"\bPairing mode:\s*(active|bail-current-chunk|exited)\b", re.IGNORECASE)
 
 
 def read_stdin_json() -> dict[str, Any]:
@@ -44,33 +45,48 @@ def read_transcript(path_value: Any, max_bytes: int = MAX_TRANSCRIPT_BYTES) -> s
 
 
 def extract_text_entries(transcript: str, *, max_lines: int = 400) -> list[str]:
-    entries: list[str] = []
+    return [entry for _, entry in extract_role_text_entries(transcript, max_lines=max_lines)]
+
+
+def extract_role_text_entries(transcript: str, *, max_lines: int = 400) -> list[tuple[str, str]]:
+    entries: list[tuple[str, str]] = []
     for line in transcript.splitlines()[-max_lines:]:
-        text = extract_text_from_line(line)
-        if text:
-            entries.append(text)
+        entry = extract_role_text_from_line(line)
+        if entry:
+            entries.append(entry)
     return entries
 
 
-def extract_text_from_line(line: str) -> str:
+def extract_role_text_from_line(line: str) -> tuple[str, str] | None:
     stripped = line.strip()
     if not stripped:
-        return ""
+        return None
     try:
         item = json.loads(stripped)
     except json.JSONDecodeError:
-        return clean_text(stripped)
+        text = clean_text(stripped)
+        return ("", text) if text else None
 
     if not isinstance(item, dict):
-        return ""
+        return None
+    if isinstance(item.get("payload"), dict):
+        item = item["payload"]
 
-    role = item.get("role") or item.get("type") or item.get("source")
+    role = str(item.get("role") or item.get("type") or item.get("source") or "").strip()
     content = item.get("content") or item.get("text") or item.get("message")
-    text = flatten_content(content)
+    text = clean_text(flatten_content(content))
     if not text:
+        return None
+    return role, text
+
+
+def extract_text_from_line(line: str) -> str:
+    entry = extract_role_text_from_line(line)
+    if not entry:
         return ""
+    role, text = entry
     prefix = f"{role}: " if role else ""
-    return clean_text(prefix + text)
+    return prefix + text
 
 
 def flatten_content(value: Any) -> str:
@@ -146,6 +162,37 @@ def detect_task_state(transcript: str) -> list[str]:
     entries = [scrub_compact_skills(entry) for entry in extract_text_entries(transcript)]
     candidates = [entry for entry in entries if combined.search(entry)]
     return candidates[-4:]
+
+
+def extract_pairing_mode(transcript: str) -> str:
+    latest = "none"
+    for role, text in extract_role_text_entries(transcript):
+        if role.lower() != "assistant":
+            continue
+        match = PAIRING_MODE_PATTERN.search(text)
+        if match:
+            latest = match.group(1).lower()
+    return latest
+
+
+def prompt_requests_pairing_exit(prompt: str) -> bool:
+    lowered = prompt.lower()
+    patterns = (
+        r"\b(?:exit|stop|leave|disable|end)\s+(?:pair(?:ing)?|pair mode|\$?code:pair)\b",
+        r"\b(?:no more|done with)\s+(?:pair(?:ing)?|pair mode|\$?code:pair)\b",
+    )
+    return any(re.search(pattern, lowered) for pattern in patterns)
+
+
+def prompt_requests_pairing_bail(prompt: str) -> bool:
+    lowered = prompt.lower()
+    patterns = (
+        r"\bbail\b",
+        r"\blet codex implement\b",
+        r"\byou implement (?:this|the) chunk\b",
+        r"\bimplement this chunk\b",
+    )
+    return any(re.search(pattern, lowered) for pattern in patterns)
 
 
 def safe_key(value: str) -> str:
