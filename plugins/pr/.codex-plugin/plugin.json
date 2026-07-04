@@ -1,22 +1,23 @@
 {
   "name": "pr",
   "version": "0.3.0",
-  "description": "Pull request review, description, and feedback-addressing workflows for Codex.",
+  "description": "Pull request review, description, grilling, and feedback-addressing workflows for Codex.",
   "author": {
     "name": "Yaadata"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "PR",
-    "shortDescription": "Review, describe, and address pull requests.",
-    "longDescription": "PR provides pull request workflows for GitHub and Codeberg, including focused review modules, PR body description publishing, and review feedback addressing.",
+    "shortDescription": "Review, describe, grill, and address pull requests.",
+    "longDescription": "PR provides pull request workflows for GitHub and Codeberg, including focused review modules, PR body description publishing, interactive PR grilling with evidence-backed answers, and review feedback addressing.",
     "developerName": "Yaadata",
     "category": "Productivity",
     "capabilities": [
       "pull-request-review",
       "pull-request-description",
+      "pull-request-grilling",
       "pull-request-feedback-addressing"
     ],
-    "defaultPrompt": "Use $pr:review to review, $pr:describe to draft and publish a PR body, or $pr:address to address review feedback."
+    "defaultPrompt": "Use $pr:review to review, $pr:describe to draft and publish a PR body, $pr:grill to quiz understanding of a PR with evidence-backed answers, or $pr:address to address review feedback."
   }
 }
