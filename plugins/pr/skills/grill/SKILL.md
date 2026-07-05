@@ -78,7 +78,9 @@ Exhaustive, not repetitive. If user proved bucket already, compress next q for t
 
 - Every question must use interactive select when Codex has interactive select available.
 - Ask exactly 1 question at time.
-- Put recommended option first. Label recommended option recommended.
+- Never recommend an answer choice.
+- Never label any option recommended, preferred, best guess, likely, or similar answer-bias wording.
+- Present choices neutrally. Goal is quiz user, not steer user to right answer.
 - Do not ask plain free-form q if same decision can fit in 2-4 meaningful choices.
 - Use free-form only when user must explain reasoning, teach back understanding, or provide evidence/detail that cannot fit small meaningful choice set.
 - If native multi-select not available, emulate multi-select with repeated 1-question interactive select steps.
