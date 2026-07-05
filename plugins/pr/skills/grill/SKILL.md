@@ -74,6 +74,16 @@ Cover all relevant buckets:
 
 Exhaustive, not repetitive. If user proved bucket already, compress next q for that bucket.
 
+## Interaction Rules
+
+- Every question must use interactive select when Codex has interactive select available.
+- Ask exactly 1 question at time.
+- Put recommended option first. Label recommended option recommended.
+- Do not ask plain free-form q if same decision can fit in 2-4 meaningful choices.
+- Use free-form only when user must explain reasoning, teach back understanding, or provide evidence/detail that cannot fit small meaningful choice set.
+- If native multi-select not available, emulate multi-select with repeated 1-question interactive select steps.
+- If question starts as free-form, first decide whether it can be rewritten as interactive select. If yes, rewrite it.
+
 ## Quiz Flow
 
 1. Load PR ctx.
@@ -81,8 +91,8 @@ Exhaustive, not repetitive. If user proved bucket already, compress next q for t
 3. Inspect diff + surrounding code.
 4. Build bucket checklist.
 5. Ask 1 q at time.
-6. Use interactive select for discrete choices when available.
-7. Use free-form when user must explain reasoning.
+6. Use interactive select for every question when available, including scope checks, hunk selection, validation checks, risk checks, reviewer-objection checks, and follow-up drill choices.
+7. Use free-form only for teach-back, explanation, or evidence the user must supply in their own words and cannot express as small choice set.
 8. Start high-level, then drill hunks/files/validations/risk.
 9. After each answer, score bucket: covered, partial, wrong, deeper drill needed.
 10. Continue until all relevant buckets covered or user exits.
@@ -92,6 +102,7 @@ For hunk-level drill:
 - cite file + diff ref first
 - summarize changed block
 - ask intent/risk/test/tradeoff q
+- use interactive select whenever hunk question can fit meaningful choices
 
 ## Answer Handling
 
@@ -107,6 +118,7 @@ If answer partial or wrong:
 - name exact gap
 - explain expected answer
 - ask 1 teach-back follow-up before moving on
+- if follow-up can be meaningfully expressed as choices, use interactive select, not free-form
 
 If repo or PR materials do not settle answer:
 
@@ -121,7 +133,8 @@ After correction:
 1. cite evidence
 2. restate expected answer
 3. ask follow-up q on same concept
-4. mark bucket covered only after user shows understanding
+4. use interactive select for follow-up unless user must explain concept in their own words
+5. mark bucket covered only after user shows understanding
 
 ## Output
 

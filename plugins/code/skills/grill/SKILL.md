@@ -60,6 +60,16 @@ Cover all buckets unless target truly lacks bucket:
 
 Do not ask same q twice with new wording. If user already showed bucket understanding, move on.
 
+## Interaction Rules
+
+- Every question must use interactive select when Codex has interactive select available.
+- Ask exactly 1 question at time.
+- Put recommended option first. Label recommended option recommended.
+- Do not ask plain free-form q if same decision can fit in 2-4 meaningful choices.
+- Use free-form only when user must explain reasoning, teach back understanding, or give detail that cannot fit small meaningful choice set.
+- If native multi-select not available, emulate multi-select with repeated 1-question interactive select steps.
+- If question starts as free-form, first decide whether it can be rewritten as interactive select. If yes, rewrite it.
+
 ## Quiz Flow
 
 1. Identify target.
@@ -67,8 +77,8 @@ Do not ask same q twice with new wording. If user already showed bucket understa
 3. Build bucket checklist.
 4. Start high-level. Then drill low-level.
 5. Ask 1 q at time.
-6. Use interactive select for discrete choices when available.
-7. Use free-form when user must explain reasoning.
+6. Use interactive select for every question when available, including scope checks, bucket checks, confidence checks, tradeoff checks, and follow-up drill choices.
+7. Use free-form only for teach-back, explanation, or evidence the user must supply in their own words and cannot express as small choice set.
 8. After each answer, decide:
    - bucket covered
    - bucket partial
@@ -97,6 +107,7 @@ If answer partial or wrong:
 - cite local code refs
 - explain expected answer + tradeoff/risk
 - ask 1 teach-back follow-up before moving on
+- if follow-up can be meaningfully expressed as choices, use interactive select, not free-form
 
 If answer plausible but unverified:
 
@@ -113,8 +124,9 @@ Flow:
 1. correct gap
 2. cite evidence
 3. ask narrow follow-up q on same concept
-4. if user now gets it, mark bucket covered
-5. if still weak, simplify once more or say more inspection needed
+4. use interactive select for follow-up unless user must explain concept in their own words
+5. if user now gets it, mark bucket covered
+6. if still weak, simplify once more or say more inspection needed
 
 ## Output
 
