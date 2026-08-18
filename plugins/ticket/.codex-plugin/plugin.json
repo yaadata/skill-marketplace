@@ -1,0 +1,23 @@
+{
+  "name": "ticket",
+  "version": "0.1.0",
+  "description": "Interactive, problem-focused ticket creation across Jira, Linear, and common Git hosts.",
+  "author": {
+    "name": "Yaadata"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Ticket",
+    "shortDescription": "Create concise tickets across issue providers.",
+    "longDescription": "Ticket provides a user-controlled workflow for creating concise, problem-focused tickets in Jira, Linear, GitHub, Codeberg, Forgejo, GitLab, and Gitea through remembered MCP or CLI routing, project templates, assignment, and native iteration placement.",
+    "developerName": "Yaadata",
+    "category": "Productivity",
+    "capabilities": [
+      "ticket-creation",
+      "multi-provider-ticket-routing",
+      "ticket-template-selection",
+      "beads-backed-routing-preferences"
+    ],
+    "defaultPrompt": "Use $ticket:create to create a concise, problem-focused ticket through an available Jira, Linear, or Git-host provider."
+  }
+}
