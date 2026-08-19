@@ -1,4 +1,4 @@
 interface:
   display_name: "Create Ticket"
-  short_description: "Create concise problem-focused tickets"
-  default_prompt: "Use $ticket:create to create a concise problem-focused ticket with me."
+  short_description: "Create tickets automatically or through pairing"
+  default_prompt: "Use $ticket:create to choose auto or paired mode and create a concise problem-focused ticket."
